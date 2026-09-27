@@ -254,10 +254,6 @@ Acknowledgements
 License
 MIT
 
-## Add it and push
-
-Save `README.md` in the project root. Then in PowerShell:
-
 ```powershell
 cd C:\Users\PC\cmc-ai-analyst
 git add README.md
