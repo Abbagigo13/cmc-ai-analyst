@@ -1734,10 +1734,10 @@ function createAlert(e) {
 async function checkAlerts() {
   if (!alerts.length) return;
   try {
-    const res = await fetch('/dashboard/summary');
+        const res = await fetch('/markets/top100');
     if (!res.ok) return;
     const data = await res.json();
-    const moves = data.movers || [];
+    const moves = data.assets || [];
     let anyChanged = false;
 
     for (const a of alerts) {

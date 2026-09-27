@@ -8,7 +8,7 @@ import httpx
 log = logging.getLogger("cmc")
 
 CMC_BASE = "https://pro-api.coinmarketcap.com"
-CMC_KEY = os.environ["CMC_API_KEY"]
+CMC_KEY = os.environ.get("CMC_API_KEY", "")
 
 CREDITS_USED = 0
 
@@ -19,6 +19,8 @@ class CMCError(Exception):
 
 async def _get(path: str, params: dict[str, Any]) -> dict:
     global CREDITS_USED
+    if not CMC_KEY:
+        raise CMCError("CMC_API_KEY is not set.")
     headers = {"X-CMC_PRO_API_KEY": CMC_KEY, "Accept": "application/json"}
     async with httpx.AsyncClient(timeout=25) as client:
         r = await client.get(CMC_BASE + path, params=params, headers=headers)
