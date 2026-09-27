@@ -254,9 +254,3 @@ Acknowledgements
 License
 MIT
 
-```powershell
-cd C:\Users\PC\cmc-ai-analyst
-git add README.md
-git commit -m "Add README"
-git push
-
