@@ -48,7 +48,27 @@ async def health():
         "cmc_key_set": bool(os.environ.get("CMC_API_KEY")),
         "qwen_key_set": bool(os.environ.get("DASHSCOPE_API_KEY")),
         "model": os.environ.get("QWEN_MODEL", "qwen-plus"),
+        "credits_used": cmc.CREDITS_USED,
     }
+
+
+@app.get("/tokenized-assets")
+async def tokenized_assets():
+    try:
+        assets = await cmc.get_rwa_listings(limit=50, sort="rwa_rank")
+        return {"assets": assets, "count": len(assets)}
+    except Exception as e:
+        logging.exception("tokenized-assets failed")
+        raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {e}")
+
+
+@app.get("/news")
+async def news():
+    try:
+        return await cmc.get_news(limit=12)
+    except Exception as e:
+        logging.exception("news failed")
+        raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {e}")
 
 
 @app.get("/markets/top200")
@@ -59,7 +79,6 @@ async def markets_top200():
     except Exception as e:
         logging.exception("markets200 failed")
         raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {e}")
-
 
 
 @app.get("/markets/top100")

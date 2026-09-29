@@ -99,7 +99,7 @@
     /* Screener */
   .screener-form {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
     padding: 18px;
     background: var(--panel);
@@ -119,6 +119,8 @@
     transition: border-color .12s ease;
   }
   .field input:focus, .field select:focus { border-color: var(--cyan); }
+    .field input, .field select { width: 100%; min-width: 0; box-sizing: border-box; }
+  .screener-actions { flex-wrap: wrap; }
   .field input::placeholder { color: var(--text-3); }
 
   .screener-actions {
@@ -173,9 +175,13 @@
     transition: border-color .15s ease;
   }
   .alert-card.triggered { border-left-color: var(--amber); background: linear-gradient(90deg, var(--amber-dim) 0%, var(--panel) 40%); }
+    .alert-card { position: relative; }
   .alert-card.triggered::before {
     content: 'TRIGGERED';
-    position: absolute;
+    position: absolute; top: 14px; right: 44px;
+    font-size: 9px; font-weight: 700; letter-spacing: .06em;
+    color: var(--amber); background: var(--amber-dim);
+    padding: 2px 8px; border-radius: 999px;
   }
   .alert-card-head {
     display: flex; align-items: center; justify-content: space-between;
@@ -296,6 +302,79 @@
   .footer-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px; }
   .footer-card .k { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
   .footer-card .v { font-size: 13px; font-weight: 600; }
+    /* Skeleton loaders */
+  .skeleton { position: relative; overflow: hidden; background: var(--panel-2); border-radius: 6px; }
+  .skeleton::after {
+    content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+    animation: sk-shimmer 1.3s infinite;
+  }
+  @keyframes sk-shimmer { 100% { transform: translateX(100%); } }
+  .sk-line { height: 12px; width: 100%; }
+  .sk-line.short { width: 55%; }
+  .sk-circle { width: 28px; height: 28px; border-radius: 50%; }
+  .sk-card { height: 110px; border-radius: var(--radius-sm); }
+  .sk-block { height: 220px; border-radius: var(--radius-sm); }
+    .sk-row { display: grid; grid-template-columns: repeat(var(--cols, 6), minmax(0, 1fr)); gap: 16px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+  .kpis.loading .kpi-value, .kpis.loading .kpi-delta {
+    position: relative; overflow: hidden; display: inline-block;
+    color: transparent !important; background: var(--panel-2); border-radius: 6px; width: 55%;
+  }
+  .kpis.loading .kpi-delta { width: 35%; }
+  .kpis.loading .kpi-value::after, .kpis.loading .kpi-delta::after {
+    content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+    animation: sk-shimmer 1.3s infinite;
+  }
+  .kpis.loading .kpi-spark { opacity: .15; }
+
+  /* Tokenized Assets */
+  .markets-table.tk .markets-head, .markets-table.tk .markets-row {
+    grid-template-columns: 40px minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, .9fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .type-badge {
+    font-size: 10px; font-weight: 600; text-transform: capitalize;
+    padding: 2px 8px; border-radius: 999px;
+    background: var(--panel-2); color: var(--text-3); width: fit-content;
+  }
+
+  /* News */
+  .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .news-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 16px; display: flex; flex-direction: column; gap: 6px;
+    text-decoration: none; color: inherit;
+  }
+  .news-card:hover { border-color: var(--line-2); }
+  .news-card-title { font-size: 14px; font-weight: 600; line-height: 1.35; }
+  .news-card-sub { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+  .news-card-meta { font-size: 11px; color: var(--text-3); margin-top: auto; padding-top: 6px; }
+
+  /* Settings */
+  .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .settings-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; }
+  .settings-card-title {
+    font-size: 12px; font-weight: 600; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: .04em; margin-bottom: 12px;
+  }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13px;
+  }
+  .settings-row:last-of-type { border-bottom: none; }
+  .settings-val { font-weight: 600; }
+  .settings-pill { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--panel-2); color: var(--text-3); }
+  .settings-pill.ok { color: var(--green); background: var(--green-dim); }
+  .settings-pill.bad { color: var(--red); background: rgba(239,68,68,.12); }
+
+  /* Full-screen AI Chat */
+  .full-chat-body {
+    flex: 1; overflow-y: auto; padding: 20px;
+    display: flex; flex-direction: column; gap: 16px;
+    max-width: 760px; margin: 0 auto; width: 100%;
+  }
+  .full-chat-composer { max-width: 760px; margin: 0 auto; width: 100%; padding: 12px 0; }
+    .full-chat-body { min-height: 300px; max-height: calc(100vh - 300px); }
 
   /* Main */
     .main { display: flex; flex-direction: column; min-height: 0; min-width: 0; overflow-y: auto; overflow-x: hidden; background: var(--bg); }
@@ -398,6 +477,11 @@
   .suggestion-icon { width: 22px; height: 22px; border-radius: 6px; background: var(--panel-2); color: var(--cyan); display: grid; place-items: center; font-size: 11px; flex-shrink: 0; }
 
   .msg { display: flex; flex-direction: column; gap: 6px; animation: fadeUp .25s ease; }
+    .msg { min-width: 0; }
+  .copilot-body { overflow-x: hidden; }
+  .msg-bubble { min-width: 0; overflow-wrap: anywhere; }
+  .msg.assistant .msg-bubble table { display: block; max-width: 100%; overflow-x: auto; white-space: normal; }
+  .msg.assistant .msg-bubble th, .msg.assistant .msg-bubble td { white-space: nowrap; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
   .msg-head { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); }
   .msg.assistant .msg-head { color: var(--cyan); }
@@ -536,19 +620,13 @@
     </header>
 
         <div class="content">
-      <section class="view active" data-view="overview">
+                  <section class="view active" data-view="overview">
 
       <div class="signals" id="signals">
-        <div class="signal info">
-          <div class="signal-icon">i</div>
-          <div class="signal-body">
-            <div class="signal-meta">LOADING · <span class="id">—</span></div>
-            <div class="signal-text">Fetching live market signals…</div>
-          </div>
-        </div>
+        <div class="skeleton sk-card" style="height:72px"></div>
       </div>
 
-      <div class="kpis" id="kpis">
+      <div class="kpis loading" id="kpis">
         <div class="kpi">
           <div class="kpi-head"><div class="kpi-label">Total Market Cap</div><div class="kpi-icon">$</div></div>
           <div class="kpi-value">—</div>
@@ -760,27 +838,67 @@
         <div class="alert-cards" id="alertCards"></div>
       </section>
 
-      <section class="view" data-view="tokenized">
-        <div style="padding:60px;text-align:center;color:var(--text-3);font-size:13px">
-          Tokenized Assets — real-world assets via CMC's /real-world-assets endpoints, coming soon.
+            <section class="view" data-view="tokenized">
+        <div class="markets-toolbar">
+          <input class="markets-search" id="tokenizedSearch" placeholder="Search tokenized assets by name or symbol..." />
+          <button class="filter-pill active" data-tk-filter="all">All</button>
+          <button class="filter-pill" data-tk-filter="stock">Stocks</button>
+          <button class="filter-pill" data-tk-filter="commodity">Commodities</button>
+          <button class="filter-pill" data-tk-filter="government_security">Gov. Securities</button>
+          <button class="filter-pill" data-tk-filter="etf">ETFs</button>
+        </div>
+        <div class="markets-table tk">
+          <div class="markets-head">
+            <div>#</div>
+            <div>Asset</div>
+            <div>Type</div>
+            <div class="sortable" data-tk-sort="price">Price</div>
+            <div class="sortable" data-tk-sort="market_cap">Tokenized Cap</div>
+            <div class="sortable" data-tk-sort="volume_24h">24h Volume</div>
+          </div>
+          <div id="tokenizedBody"></div>
         </div>
       </section>
 
       <section class="view" data-view="news">
-        <div style="padding:60px;text-align:center;color:var(--text-3);font-size:13px">
-          News — coming soon.
-        </div>
+        <div id="newsBody" class="news-grid"></div>
       </section>
 
       <section class="view" data-view="chat">
-        <div style="padding:60px;text-align:center;color:var(--text-3);font-size:13px">
-          Full-screen AI Chat — coming in Phase 5.
+        <div id="fullChatBody" class="full-chat-body">
+          <div class="copilot-welcome">Ask about market data.</div>
         </div>
+        <form class="composer full-chat-composer" id="fullChatComposer">
+          <textarea id="fullChatInput" rows="1" placeholder="Ask about any asset or market trend..."></textarea>
+          <button class="send-btn" id="fullChatSend" type="submit" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
       </section>
 
       <section class="view" data-view="settings">
-        <div style="padding:60px;text-align:center;color:var(--text-3);font-size:13px">
-          Settings — coming in Phase 6.
+        <div class="settings-grid">
+          <div class="settings-card">
+            <div class="settings-card-title">Connection</div>
+            <div class="settings-row"><span>CoinMarketCap API key</span><span id="setCmcKey" class="settings-pill">—</span></div>
+            <div class="settings-row"><span>DashScope (Qwen) API key</span><span id="setQwenKey" class="settings-pill">—</span></div>
+            <div class="settings-row"><span>Model</span><span id="setModel" class="settings-val">—</span></div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">API Usage</div>
+            <div class="settings-row"><span>Credits used this session</span><span id="setCredits" class="settings-val">—</span></div>
+            <div class="settings-row"><span>Dashboard cache</span><span class="settings-val">60s TTL</span></div>
+            <div class="settings-row"><span>Alert poll interval</span><span class="settings-val">60s</span></div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">Local Data</div>
+            <div class="settings-row"><span>Watchlist entries</span><span id="setWatchlistCount" class="settings-val">0</span></div>
+            <div class="settings-row"><span>Alert rules</span><span id="setAlertsCount" class="settings-val">0</span></div>
+            <button type="button" class="btn-ghost" id="clearWatchlistBtn" style="margin-top:8px">Clear Watchlist</button>
+            <button type="button" class="btn-ghost" id="clearAlertsBtn" style="margin-top:8px">Clear Alerts</button>
+          </div>
         </div>
       </section>
 
@@ -949,7 +1067,7 @@ function symbolSpark(sym, price, change) {
 function buildMovers() {
   const el = document.getElementById('movers');
   if (!moversData.length) {
-    el.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-3);font-size:13px">Loading market data…</div>';
+        el.innerHTML = skeletonList(8, 6);
     return;
   }
   el.innerHTML = moversData.map(m => {
@@ -1105,6 +1223,7 @@ const send = document.getElementById('send');
 const composer = document.getElementById('composer');
 
 function renderMarkdown(text) {
+  text = text.replace(/(\S)\s+[—–]\s+(?=[^\s|])/g, '$1, ').replace(/(\w)[—–](\w)/g, '$1, $2');
   const lines = escapeHtml(text).split('\n');
   let out = '', inTable = false, rows = [];
   function flush() {
@@ -1195,6 +1314,7 @@ composer.addEventListener('submit', async (e) => {
     history.push({ role: 'user', content: text });
     history.push({ role: 'assistant', content: data.answer });
     if (history.length > 12) history = history.slice(-12);
+        refreshCredits();
   } catch (err) {
     pending.closest('.msg').classList.add('error');
     pending.textContent = 'Error: ' + err.message;
@@ -1213,7 +1333,8 @@ async function loadDashboard() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
 
-    // KPIs
+        document.getElementById('kpis').classList.remove('loading');
+      // KPIs
     if (data.kpis && data.kpis.length === 4) {
       const tiles = document.querySelectorAll('.kpi');
       data.kpis.forEach((k, i) => {
@@ -1272,6 +1393,7 @@ async function loadDashboard() {
 
   } catch (err) {
     console.error('dashboard load failed:', err);
+        document.getElementById('kpis').classList.remove('loading');
     document.getElementById('movers').innerHTML =
       '<div style="padding:40px;text-align:center;color:var(--red);font-size:13px">Failed to load: ' + escapeHtml(err.message) + '</div>';
   }
@@ -1315,19 +1437,21 @@ function showView(name) {
   document.querySelectorAll('.nav-item').forEach(n => {
     n.classList.toggle('active', n.dataset.view === name);
   });
+
   const titleEl = document.querySelector('.page-title h1');
   if (titleEl) titleEl.textContent = VIEW_TITLES[name] || 'Overview';
 
-    if (name === 'markets') loadMarkets();
+  if (name === 'markets') loadMarkets();
+  if (name === 'tokenized') loadTokenized();
+  if (name === 'news') loadNews();
   if (name === 'watchlist') renderWatchlist();
-    if (name === 'screener') {
-    loadScreenerData().then(() => {
-      if (!document.getElementById('screenerResult').style.display ||
-          document.getElementById('screenerResult').style.display === 'none') {
-        runScreener();
-      }
-    });
+  if (name === 'settings') loadSettings();
+  if (name === 'chat') document.getElementById('fullChatInput')?.focus();
+  if (name === 'screener') {
+    loadScreenerData().then(() => runScreener());
   }
+
+  refreshCredits();
 }
 
 document.querySelectorAll('.nav-item[data-view]').forEach(item => {
@@ -1343,7 +1467,7 @@ document.querySelectorAll('.nav-item[data-view]').forEach(item => {
 async function loadMarkets() {
   const body = document.getElementById('marketsBody');
   if (!marketsData.length) {
-    body.innerHTML = '<div style="padding:60px;text-align:center;color:var(--text-3);font-size:13px">Loading top 100 assets…</div>';
+        body.innerHTML = skeletonList(12, 8);
     try {
       const res = await fetch('/markets/top100');
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1481,6 +1605,9 @@ let screenerData = [];
 
 async function loadScreenerData() {
   if (screenerData.length) return;
+    document.getElementById('screenerResult').style.display = 'flex';
+  document.getElementById('screenerTable').style.display = 'block';
+  document.getElementById('screenerBody').innerHTML = skeletonList(10, 8);
   try {
     const res = await fetch('/markets/top200');
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -1610,7 +1737,7 @@ function renderWatchlist() {
   }
   const rows = marketsData.filter(m => watchlist.includes(m.symbol));
   if (!rows.length) {
-    body.innerHTML = '<div style="padding:60px;text-align:center;color:var(--text-3);font-size:13px">Loading watchlist data…</div>';
+        body.innerHTML = skeletonList(Math.max(watchlist.length, 3), 8);
     loadMarkets().then(renderWatchlist);
     return;
   }
@@ -1860,11 +1987,259 @@ renderAlerts();
 updateAlertStatus();
 updateWatchlistBadge();
 
+// ============================================================
+//  Skeleton helpers
+// ============================================================
+function skeletonRows(count, cols) {
+  const cell = '<div class="skeleton sk-line"></div>';
+  const row = '<div class="markets-row">' + cell.repeat(cols) + '</div>';
+  return row.repeat(count);
+}
+
+function skeletonCards(count) {
+  return '<div class="skeleton sk-card"></div>'.repeat(count);
+}
+function skeletonList(count, cols) {
+  const cells = '<div class="skeleton sk-line"></div>'.repeat(cols);
+  return ('<div class="sk-row" style="--cols:' + cols + '">' + cells + '</div>').repeat(count);
+}
+
+// ============================================================
+//  Tokenized Assets (CMC RWA API)
+// ============================================================
+let tokenizedData = [];
+let tokenizedSort = { key: 'market_cap', dir: 'desc' };
+let tokenizedFilter = 'all';
+
+async function loadTokenized() {
+  const body = document.getElementById('tokenizedBody');
+  if (!tokenizedData.length) {
+        body.innerHTML = skeletonList(10, 6);
+    try {
+      const res = await fetch('/tokenized-assets');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      tokenizedData = data.assets || [];
+    } catch (err) {
+      body.innerHTML = '<div style="padding:40px;text-align:center;color:var(--red);font-size:13px">Failed to load: ' + escapeHtml(err.message) + '</div>';
+      return;
+    }
+  }
+  renderTokenized();
+}
+
+function renderTokenized() {
+  const body = document.getElementById('tokenizedBody');
+  let rows = tokenizedData.slice();
+  const q = (document.getElementById('tokenizedSearch').value || '').toLowerCase().trim();
+  if (q) rows = rows.filter(r => (r.symbol || '').toLowerCase().includes(q) || (r.name || '').toLowerCase().includes(q));
+  if (tokenizedFilter !== 'all') rows = rows.filter(r => r.asset_type === tokenizedFilter);
+  const dirMul = tokenizedSort.dir === 'asc' ? 1 : -1;
+  rows.sort((a, b) => ((a[tokenizedSort.key] ?? 0) - (b[tokenizedSort.key] ?? 0)) * dirMul);
+
+  if (!rows.length) {
+    body.innerHTML = '<div style="padding:60px;text-align:center;color:var(--text-3);font-size:13px">No tokenized assets match your filters.</div>';
+    return;
+  }
+  body.innerHTML = rows.map(m => {
+    const sym = m.symbol || '?';
+    const type = (m.asset_type || '').replace('_', ' ');
+    return `
+      <div class="markets-row">
+        <div class="rank">${m.rank ?? ''}</div>
+        <div class="asset">
+          <div class="asset-icon" style="background:${symbolColor(sym)}">${escapeHtml(sym.slice(0,3))}</div>
+          <div class="asset-names">
+            <div class="asset-sym">${escapeHtml(sym)}</div>
+            <div class="asset-name">${escapeHtml(m.name || '')}</div>
+          </div>
+        </div>
+        <div><span class="type-badge">${escapeHtml(type)}</span></div>
+        <div class="price">${fmtPrice(m.price || 0)}</div>
+        <div class="price">${m.market_cap ? fmtBig(m.market_cap) : '—'}</div>
+        <div class="price">${m.volume_24h ? fmtBig(m.volume_24h) : '—'}</div>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('tokenizedSearch').addEventListener('input', renderTokenized);
+document.querySelectorAll('[data-tk-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-tk-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    tokenizedFilter = btn.dataset.tkFilter;
+    renderTokenized();
+  });
+});
+document.querySelectorAll('[data-tk-sort]').forEach(h => {
+  h.addEventListener('click', () => {
+    const key = h.dataset.tkSort;
+    tokenizedSort = { key, dir: tokenizedSort.key === key && tokenizedSort.dir === 'desc' ? 'asc' : 'desc' };
+    document.querySelectorAll('[data-tk-sort]').forEach(x => x.classList.toggle('active', x === h));
+    renderTokenized();
+  });
+});
+
+// ============================================================
+//  News (CMC Content API - needs a Standard+ CMC plan)
+// ============================================================
+let newsLoaded = false;
+
+async function loadNews() {
+  if (newsLoaded) return;
+  const body = document.getElementById('newsBody');
+  body.innerHTML = skeletonCards(6);
+  try {
+    const res = await fetch('/news');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data.error || !(data.articles || []).length) {
+      body.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-3);font-size:13px;grid-column:1/-1">News is unavailable on this API plan. CoinMarketCap\'s Content endpoint requires a Standard plan or higher.<br><span style="font-size:11px">' + escapeHtml(data.error || 'No articles returned.') + '</span></div>';
+      return;
+    }
+    body.innerHTML = data.articles.map(a => {
+      const when = a.released_at ? new Date(a.released_at).toLocaleString() : '';
+      return `
+        <a class="news-card" href="${escapeHtml(a.source_url || '#')}" target="_blank" rel="noopener noreferrer">
+          <div class="news-card-title">${escapeHtml(a.title || '')}</div>
+          <div class="news-card-sub">${escapeHtml(a.subtitle || '')}</div>
+          <div class="news-card-meta">${escapeHtml(a.source_name || '')}${when ? ' · ' + escapeHtml(when) : ''}</div>
+        </a>`;
+    }).join('');
+    newsLoaded = true;
+  } catch (err) {
+    body.innerHTML = '<div style="padding:40px;text-align:center;color:var(--red);font-size:13px;grid-column:1/-1">Failed to load: ' + escapeHtml(err.message) + '</div>';
+  }
+}
+
+// ============================================================
+//  Settings
+// ============================================================
+function setPill(id, ok) {
+  const el = document.getElementById(id);
+  el.textContent = ok ? 'Configured' : 'Missing';
+  el.className = 'settings-pill ' + (ok ? 'ok' : 'bad');
+}
+
+async function loadSettings() {
+  document.getElementById('setWatchlistCount').textContent = watchlist.length;
+  document.getElementById('setAlertsCount').textContent = alerts.length;
+  try {
+    const d = await (await fetch('/health')).json();
+    setPill('setCmcKey', d.cmc_key_set);
+    setPill('setQwenKey', d.qwen_key_set);
+    document.getElementById('setModel').textContent = d.model || '—';
+    document.getElementById('setCredits').textContent = d.credits_used ?? '—';
+  } catch (e) {}
+}
+
+document.getElementById('clearWatchlistBtn').addEventListener('click', () => {
+  watchlist = [];
+  localStorage.setItem('watchlist', '[]');
+  updateWatchlistBadge();
+  loadSettings();
+});
+
+document.getElementById('clearAlertsBtn').addEventListener('click', () => {
+  alerts = [];
+  saveAlerts();
+  renderAlerts();
+  updateAlertBadge();
+  loadSettings();
+});
+
+// Sidebar credits counter
+function refreshCredits() {
+  fetch('/health').then(r => r.json()).then(d => {
+    if (d.credits_used != null) {
+      document.getElementById('creditBalance').textContent = d.credits_used + ' used';
+    }
+  }).catch(() => {});
+}
+
+// ============================================================
+//  Full-screen AI Chat (own conversation, same /chat backend)
+// ============================================================
+let fullHistory = [];
+const fullBody = document.getElementById('fullChatBody');
+const fullComposer = document.getElementById('fullChatComposer');
+const fullInput = document.getElementById('fullChatInput');
+const fullSend = document.getElementById('fullChatSend');
+
+function addFullMsg(role, text, opts = {}) {
+  const welcome = fullBody.querySelector('.copilot-welcome');
+  if (welcome) welcome.remove();
+  const el = document.createElement('div');
+  el.className = 'msg ' + role;
+  const head = document.createElement('div');
+  head.className = 'msg-head';
+  head.textContent = role === 'user' ? 'You' : 'Copilot';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  if (opts.typing) bubble.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  else bubble.textContent = text;
+  el.append(head, bubble);
+  fullBody.appendChild(el);
+  fullBody.scrollTop = fullBody.scrollHeight;
+  return bubble;
+}
+
+fullInput.addEventListener('input', () => {
+  fullInput.style.height = 'auto';
+  fullInput.style.height = Math.min(fullInput.scrollHeight, 120) + 'px';
+  fullSend.disabled = fullInput.value.trim().length === 0;
+});
+
+fullInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    fullComposer.requestSubmit();
+  }
+});
+
+fullComposer.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const text = fullInput.value.trim();
+  if (!text) return;
+  addFullMsg('user', text);
+  fullInput.value = '';
+  fullInput.style.height = 'auto';
+  fullSend.disabled = true;
+  const pending = addFullMsg('assistant', '', { typing: true });
+  try {
+    const res = await fetch('/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, history: fullHistory }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      pending.closest('.msg').classList.add('error');
+      pending.textContent = 'Error: ' + (data.detail || 'Request failed');
+      return;
+    }
+    pending.innerHTML = renderMarkdown(data.answer);
+    renderTrace(data.trace || []);
+    fullHistory.push({ role: 'user', content: text });
+    fullHistory.push({ role: 'assistant', content: data.answer });
+    if (fullHistory.length > 12) fullHistory = fullHistory.slice(-12);
+    fullBody.scrollTop = fullBody.scrollHeight;
+    refreshCredits();
+  } catch (err) {
+    pending.closest('.msg').classList.add('error');
+    pending.textContent = 'Error: ' + err.message;
+  } finally {
+    fullSend.disabled = fullInput.value.trim().length === 0;
+    fullInput.focus();
+  }
+});
+
 fetch('/health').then(r => r.json()).then(d => {
   document.getElementById('modelBadge').textContent = d.model || 'qwen';
 }).catch(() => {});
+refreshCredits();
 
-input.focus();
+fullInput.focus();
 </script>
 </body>
 </html>

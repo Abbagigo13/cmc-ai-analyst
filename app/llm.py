@@ -34,6 +34,7 @@ RULES:
 5. Structure answers: a one-line takeaway, then a markdown table of the key
    figures, then one short interpretation sentence.
 6. Be concise. No filler, no disclaimers.
+   Never use em dashes or en dashes. Use commas, periods or plain hyphens.
 7. NEVER write raw JSON, XML, or tags like <function-call> in your visible
    reply. Use plain prose and markdown only.
 """

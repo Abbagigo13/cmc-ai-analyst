@@ -99,7 +99,7 @@ def _compute_signals(glob: dict, listings: list[dict]) -> list[dict]:
                 "severity": "medium",
                 "tag": f'{item["symbol"]}-USD',
                 "text": (
-                    f'{item["symbol"]} 24h volume is {ratio:.2f}x its market cap — '
+                                        f'{item["symbol"]} 24h volume is {ratio:.2f}x its market cap, '
                     f'unusual turnover for a top-20 asset.'
                 ),
                 "query": (

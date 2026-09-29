@@ -234,3 +234,57 @@ async def get_trending() -> dict:
         out["gainers_losers_error"] = str(e)
 
     return out
+
+async def get_rwa_listings(
+    limit: int = 50, sort: str = "rwa_rank", asset_type: str | None = None
+) -> list[dict]:
+    valid_sorts = {
+        "rwa_rank",
+        "tokenized_market_cap",
+        "tokenized_volume_24h",
+        "average_tokenized_price",
+        "symbol",
+    }
+    sort = sort if sort in valid_sorts else "rwa_rank"
+    params: dict[str, Any] = {
+        "limit": min(max(limit, 1), 100),
+        "sort": sort,
+        "convert": "USD",
+    }
+    if asset_type:
+        params["asset_type"] = asset_type
+    body = await _get("/v5/real-world-assets/assets/list", params)
+    return [
+        {
+            "rank": item.get("rwa_rank"),
+            "symbol": item.get("symbol"),
+            "name": item.get("name"),
+            "asset_type": item.get("asset_type"),
+            "price": round(item.get("average_tokenized_price") or 0, 4),
+            "market_cap": item.get("tokenized_market_cap"),
+            "volume_24h": item.get("tokenized_volume_24h"),
+            "last_updated": item.get("last_updated"),
+        }
+        for item in body.get("data", {}).get("rwa_assets", [])
+    ]
+
+
+async def get_news(limit: int = 12) -> dict:
+    # Needs a Standard+ CMC plan; on free plans it returns an error key instead of crashing
+    try:
+        body = await _get("/v1/content/latest", {"limit": limit})
+        articles = [
+            {
+                "title": item.get("title"),
+                "subtitle": item.get("subtitle"),
+                "cover": item.get("cover"),
+                "source_name": item.get("source_name"),
+                "source_url": item.get("source_url"),
+                "type": item.get("type"),
+                "released_at": item.get("released_at") or item.get("created_at"),
+            }
+            for item in body.get("data", [])
+        ]
+        return {"articles": articles}
+    except CMCError as e:
+        return {"articles": [], "error": str(e)}
